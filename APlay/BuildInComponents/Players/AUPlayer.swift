@@ -10,6 +10,7 @@ import AudioUnit
 import Foundation
 
 final class AUPlayer: PlayerCompatible {
+    
     var readClosure: (UInt32, UnsafeMutablePointer<UInt8>) -> (UInt32, Bool) = { _, _ in (0, false) }
 
     var eventPipeline: Delegated<Player.Event, Void> = Delegated<Player.Event, Void>()
@@ -121,6 +122,10 @@ final class AUPlayer: PlayerCompatible {
         pause()
         readClosure = { _, _ in (0, false) }
         eventPipeline.removeDelegate()
+    }
+    
+    func setEQGain(value: Float, at index: Int) {
+        
     }
 }
 

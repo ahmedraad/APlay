@@ -21,6 +21,7 @@ protocol PlayerCompatible: AnyObject {
     func toggle()
 
     func setup(_: AudioStreamBasicDescription)
+    func setEQGain(value: Float, at index: Int)
 
     func currentTime() -> Float
 

@@ -10,6 +10,7 @@ import AVFoundation
 
 @available(iOS 11.0, *)
 final class APlayer: PlayerCompatible {
+    
     var readClosure: (UInt32, UnsafeMutablePointer<UInt8>) -> (UInt32, Bool) = { _, _ in (0, false) }
 
     var eventPipeline: Delegated<Player.Event, Void> = Delegated<Player.Event, Void>()
@@ -71,7 +72,19 @@ final class APlayer: PlayerCompatible {
 
     private let _engine = AVAudioEngine()
     /// <https://baike.baidu.com/item/EQ均衡器>
-    private let _eq = AVAudioUnitEQ()
+    var frequencies: [Float] = [60,150,400,1000,2400,15000]
+    
+    lazy var _eq: AVAudioUnitEQ = {
+        let eq = AVAudioUnitEQ(numberOfBands: frequencies.count)
+        eq.globalGain = 1
+        for i in 0...(eq.bands.count-1) {
+            eq.bands[i].frequency  = Float(frequencies[i])
+            eq.bands[i].gain       = 0
+            eq.bands[i].bypass     = false
+            eq.bands[i].filterType = .parametric
+        }
+        return eq
+    }()
     fileprivate var _renderBlock: AVAudioEngineManualRenderingBlock?
 
     private unowned let _config: ConfigurationCompatible
@@ -204,6 +217,10 @@ extension APlayer {
         } catch {
             eventPipeline.call(Player.Event.unknown(error))
         }
+    }
+    
+    func setEQGain(value: Float, at index: Int) {
+        self._eq.bands[index].gain = value
     }
 }
 

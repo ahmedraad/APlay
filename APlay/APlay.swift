@@ -226,6 +226,11 @@ public extension APlay {
         if let value = cover { _nowPlayingInfo.artwork = value }
         _nowPlayingInfo.update()
     }
+    
+    func setEQ(gain value: Float, at index: Int) {
+        _player.setEQGain(value: value, at: index)
+    }
+    
 }
 
 // MARK: - Private Utils
