@@ -17,6 +17,11 @@ public final class PlayList {
 
     private lazy var _randomList: [URL] = []
 
+    public var randomList: [URL] {
+        if loopPattern == .random { return _randomList }
+        return []
+    }
+
     private unowned let _pipeline: Delegated<APlay.Event, Void>
 
     #if DEBUG
