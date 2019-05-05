@@ -21,6 +21,11 @@ public final class PlayList {
         if loopPattern == .random { return _randomList }
         return []
     }
+    
+    public var currentList: [URL] {
+        if loopPattern == .random { return _randomList }
+        return list
+    }
 
     private unowned let _pipeline: Delegated<APlay.Event, Void>
 
@@ -36,10 +41,11 @@ public final class PlayList {
 
     public func changeList(to value: [URL], at index: Int) {
         list = value
-        playingIndex = index
-        _pipeline.call(.playlistChanged(value, index))
-        _pipeline.call(.playingIndexChanged(index))
         updateRandomList()
+        playingIndex = index
+        let list = loopPattern == .random ? _randomList : value
+        _pipeline.call(.playlistChanged(list, index))
+        _pipeline.call(.playingIndexChanged(index))
     }
 
     public func nextURL() -> URL? {
